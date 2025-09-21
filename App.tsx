@@ -4,11 +4,14 @@ import PromptInput from './components/PromptInput';
 import ImageDisplay from './components/ImageDisplay';
 import { generateBatikImage } from './services/geminiService';
 
+export type AspectRatio = '16:9' | '9:16' | '1:1' | '4:3' | '3:4';
+
 const App: React.FC = () => {
   const [prompt, setPrompt] = useState<string>('a majestic peacock with its tail feathers unfurled');
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9');
 
   const handleGenerateImage = useCallback(async () => {
     if (!prompt.trim()) {
@@ -20,7 +23,7 @@ const App: React.FC = () => {
     setGeneratedImage(null);
 
     try {
-      const base64Image = await generateBatikImage(prompt);
+      const base64Image = await generateBatikImage(prompt, aspectRatio);
       setGeneratedImage(`data:image/jpeg;base64,${base64Image}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred.');
@@ -28,7 +31,7 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [prompt]);
+  }, [prompt, aspectRatio]);
 
   const handleDownloadImage = useCallback(() => {
     if (!generatedImage) return;
@@ -61,6 +64,8 @@ const App: React.FC = () => {
             setPrompt={setPrompt}
             onGenerate={handleGenerateImage}
             isLoading={isLoading}
+            aspectRatio={aspectRatio}
+            setAspectRatio={setAspectRatio}
           />
           <ImageDisplay
             image={generatedImage}
@@ -68,6 +73,7 @@ const App: React.FC = () => {
             error={error}
             onDownload={handleDownloadImage}
             onDelete={handleDeleteImage}
+            aspectRatio={aspectRatio}
           />
         </main>
         <footer className="text-center text-slate-500 mt-12 text-sm">

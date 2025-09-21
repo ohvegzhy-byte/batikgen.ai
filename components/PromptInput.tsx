@@ -1,17 +1,22 @@
 import React from 'react';
+import type { AspectRatio } from '../App';
+
+const aspectRatios: AspectRatio[] = ['16:9', '9:16', '1:1', '4:3', '3:4'];
 
 interface PromptInputProps {
   prompt: string;
   setPrompt: (prompt: string) => void;
   onGenerate: () => void;
   isLoading: boolean;
+  aspectRatio: AspectRatio;
+  setAspectRatio: (ratio: AspectRatio) => void;
 }
 
-const PromptInput: React.FC<PromptInputProps> = ({ prompt, setPrompt, onGenerate, isLoading }) => {
+const PromptInput: React.FC<PromptInputProps> = ({ prompt, setPrompt, onGenerate, isLoading, aspectRatio, setAspectRatio }) => {
   return (
     <section aria-labelledby="prompt-heading">
       <h2 id="prompt-heading" className="sr-only">Prompt Input</h2>
-      <div className="relative">
+      <div className="relative mb-4">
         <textarea
           id="prompt"
           value={prompt}
@@ -37,6 +42,27 @@ const PromptInput: React.FC<PromptInputProps> = ({ prompt, setPrompt, onGenerate
             </>
           ) : 'Generate'}
         </button>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+        <label id="aspect-ratio-label" className="text-slate-400 font-medium">Aspect Ratio:</label>
+        <div role="group" aria-labelledby="aspect-ratio-label" className="flex flex-wrap gap-2">
+          {aspectRatios.map((ratio) => (
+            <button
+              key={ratio}
+              onClick={() => setAspectRatio(ratio)}
+              disabled={isLoading}
+              className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-colors disabled:opacity-50 ${
+                aspectRatio === ratio
+                  ? 'bg-teal-500 text-white'
+                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600'
+              }`}
+              aria-pressed={aspectRatio === ratio}
+            >
+              {ratio}
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );

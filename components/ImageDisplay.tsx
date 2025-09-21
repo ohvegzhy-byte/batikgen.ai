@@ -1,4 +1,5 @@
 import React from 'react';
+import type { AspectRatio } from '../App';
 
 interface ImageDisplayProps {
   image: string | null;
@@ -6,9 +7,10 @@ interface ImageDisplayProps {
   error: string | null;
   onDownload: () => void;
   onDelete: () => void;
+  aspectRatio: AspectRatio;
 }
 
-const ImageDisplay: React.FC<ImageDisplayProps> = ({ image, isLoading, error, onDownload, onDelete }) => {
+const ImageDisplay: React.FC<ImageDisplayProps> = ({ image, isLoading, error, onDownload, onDelete, aspectRatio }) => {
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -40,7 +42,7 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ image, isLoading, error, on
             src={image} 
             alt="Generated batik-themed image" 
             className="w-full h-auto object-cover rounded-lg shadow-lg shadow-black/30"
-            style={{ aspectRatio: '16 / 9' }}
+            style={{ aspectRatio: aspectRatio.replace(':', ' / ') }}
           />
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-4">
             <button
@@ -79,7 +81,11 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ image, isLoading, error, on
   };
 
   return (
-    <section aria-labelledby="image-display-heading" className="w-full aspect-video bg-slate-800 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center p-4">
+    <section 
+      aria-labelledby="image-display-heading" 
+      className="w-full bg-slate-800 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center p-4 transition-all duration-300"
+      style={{ aspectRatio: aspectRatio.replace(':', ' / ') }}
+    >
       <h2 id="image-display-heading" className="sr-only">Generated Image Display</h2>
       {renderContent()}
     </section>
